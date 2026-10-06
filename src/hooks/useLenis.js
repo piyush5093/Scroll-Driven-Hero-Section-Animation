@@ -1,37 +1,39 @@
-import { useEffect } from 'react';
-import Lenis from 'lenis';
-import { gsap, ScrollTrigger } from '../lib/gsap';
+/**
+ * src/hooks/useLenis.js
+ * Initialise Lenis smooth scroll and sync it with GSAP ScrollTrigger.
+ * Returns the lenis instance ref so callers can call lenis.stop() / lenis.start().
+ */
+import { useEffect, useRef } from 'react'
+import Lenis from 'lenis'
+import { gsap, ScrollTrigger } from '../lib/gsap'
 
-// Global lenis instance for access from other files if needed
-export let lenisInstance = null;
+export function useLenis() {
+  const lenisRef = useRef(null)
 
-export const useLenis = () => {
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      mouseMultiplier: 1,
-      smoothTouch: false,
+      smoothWheel: true,
       touchMultiplier: 2,
-    });
+    })
 
-    lenisInstance = lenis;
+    lenisRef.current = lenis
 
-    lenis.on('scroll', ScrollTrigger.update);
+    // Sync Lenis → ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update)
 
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
-    gsap.ticker.lagSmoothing(0);
+    // Drive Lenis via GSAP ticker (no manual requestAnimationFrame loop)
+    const tickerFn = (time) => lenis.raf(time * 1000)
+    gsap.ticker.add(tickerFn)
+    gsap.ticker.lagSmoothing(0)
 
     return () => {
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
-      lenis.destroy();
-      lenisInstance = null;
-    };
-  }, []);
-};
+      gsap.ticker.remove(tickerFn)
+      lenis.destroy()
+      lenisRef.current = null
+    }
+  }, [])
+
+  return lenisRef
+}

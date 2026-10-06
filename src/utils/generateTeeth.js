@@ -1,19 +1,25 @@
 /**
- * Generates an array of teeth configurations.
- * 
- * @param {number} count Number of teeth
- * @param {boolean} isTop Whether this is the top row of teeth
- * @returns {Array} Array of objects containing styles and config for each tooth
+ * src/utils/generateTeeth.js
+ * Returns an array of tooth descriptor objects.
+ * No DOM access — pure data generation.
+ *
+ * @param {object} opts
+ * @param {number} opts.count       - Number of teeth per row
+ * @param {number} opts.pitch       - Spacing between tooth centres (px)
+ * @param {number} opts.startX      - X of first tooth centre
+ * @param {'upper'|'lower'} opts.row
+ * @returns {Array<{id:string, x:number, row:string, offset:number}>}
  */
-export const generateTeeth = (count, isTop) => {
-  return Array.from({ length: count }).map((_, i) => {
-    // Top and bottom teeth stagger to interlock
-    const leftPercent = (i / count) * 100;
-    
-    return {
-      id: `tooth-${isTop ? 'top' : 'bottom'}-${i}`,
-      left: `${leftPercent}%`,
-      width: `${100 / count + 0.2}%`, // slight overlap to avoid gaps
-    };
-  });
-};
+export function generateTeeth({ count, pitch, startX, row }) {
+  const teeth = []
+  // Upper and lower rows are offset by half a pitch so they interlock when closed
+  const rowOffset = row === 'lower' ? pitch / 2 : 0
+  for (let i = 0; i < count; i++) {
+    teeth.push({
+      id: `${row}-${i}`,
+      x: startX + i * pitch + rowOffset,
+      row,
+    })
+  }
+  return teeth
+}

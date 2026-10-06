@@ -1,20 +1,24 @@
-import React from 'react';
-import { gsap, useGSAP } from '../lib/gsap';
+/**
+ * src/components/ScrollHint.jsx
+ * Animated scroll indicator shown after intro completes.
+ */
+import React, { forwardRef } from 'react'
 
-export const ScrollHint = () => {
+const ScrollHint = forwardRef(function ScrollHint(_props, ref) {
   return (
-    <div className="scroll-hint opacity-0 flex flex-col items-center justify-center text-gray-400 absolute bottom-8 left-1/2 -translate-x-1/2">
-      <span className="text-sm tracking-widest uppercase mb-2 font-medium">Scroll</span>
-      <svg 
-        className="w-5 h-5 scroll-arrow text-gray-400" 
-        fill="none" 
-        stroke="currentColor" 
-        viewBox="0 0 24 24" 
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-      </svg>
+    <div
+      ref={ref}
+      className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none select-none"
+      style={{ opacity: 0 }}
+      aria-hidden="true"
+    >
+      {/* Mouse icon */}
+      <div className="w-6 h-9 rounded-full border-2 border-white/30 flex justify-center pt-1.5">
+        <div className="w-1 h-2 bg-white/60 rounded-full" />
+      </div>
+      <p className="text-xs font-medium tracking-widest text-white/40 uppercase">Scroll</p>
     </div>
-  );
-};
+  )
+})
+
+export default ScrollHint

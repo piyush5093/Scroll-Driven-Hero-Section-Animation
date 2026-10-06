@@ -1,46 +1,64 @@
+/* ============================================================
+   Global styles — Tailwind v4 (CSS-first config)
+   ============================================================ */
 @import "tailwindcss";
 
+/* ---------- Custom fonts ---------- */
 @theme {
-  --font-syne: "Syne", sans-serif;
-  --font-inter: "Inter", sans-serif;
-
-  --color-bg-primary: #0B1020;
-  --color-zipper-bg: #141B34;
-  --color-text-primary: #F5F7FF;
-  
-  --color-accent-lime: #C6F432;
-  --color-accent-coral: #FF6B6B;
-  --color-accent-sky: #5BC8FF;
-  --color-accent-amber: #FFB020;
+  --font-syne: 'Syne', sans-serif;
+  --font-inter: 'Inter', sans-serif;
 }
 
-@layer base {
-  body {
-    @apply bg-[var(--color-bg-primary)] text-[var(--color-text-primary)];
-    font-family: var(--font-inter);
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-syne);
-  }
+/* ---------- Base reset ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  /* Lenis recommended css */
-  html.lenis, html.lenis body {
-    height: auto;
-  }
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
-  .lenis.lenis-smooth iframe {
-    pointer-events: none;
-  }
+html {
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
+}
+
+body {
+  background-color: #0B1020;
+  color: #F5F7FF;
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+  /* Let Lenis manage overflow */
+}
+
+/* ---------- Lenis smooth scroll ---------- */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ---------- will-change hints for animated layers ---------- */
+.zipper-upper,
+.zipper-lower,
+.zipper-slider,
+.stat-card {
+  will-change: transform;
+}
+
+/* ---------- Prevent FOUC on headline ---------- */
+.headline-word {
+  display: inline-block;
+  will-change: transform, opacity;
 }
